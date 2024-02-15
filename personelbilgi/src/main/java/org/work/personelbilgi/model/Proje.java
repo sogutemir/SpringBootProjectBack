@@ -22,7 +22,7 @@ public class Proje {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personel_id")
+    @JoinColumn(name = "personel_id", nullable = false)
     private Personel personel;
 
     @NotEmpty(message = "Proje adı boş olamaz")

@@ -24,7 +24,7 @@ public class Etkinlik {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personel_id")
+    @JoinColumn(name = "personel_id", nullable = false)
     private Personel personel;
 
     @NotEmpty(message = "Etkinlik türü boş olamaz")
