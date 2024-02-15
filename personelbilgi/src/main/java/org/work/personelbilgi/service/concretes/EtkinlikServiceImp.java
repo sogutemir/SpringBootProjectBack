@@ -6,9 +6,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.work.personelbilgi.core.result.*;
 import org.work.personelbilgi.dto.EtkinlikDTO;
-import org.work.personelbilgi.dto.EtkinlikDTO;
 import org.work.personelbilgi.model.Etkinlik;
+import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.repository.EtkinlikRepository;
+import org.work.personelbilgi.repository.PersonelRepository;
 import org.work.personelbilgi.service.abstracts.EtkinlikService;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class EtkinlikServiceImp implements EtkinlikService {
 
     private final EtkinlikRepository etkinlikRepository;
     private final ModelMapper modelMapper;
+    private final PersonelRepository personelRepository;
 
     @Transactional
     @Override
@@ -54,18 +56,29 @@ public class EtkinlikServiceImp implements EtkinlikService {
 
     @Transactional
     @Override
-    public Result addEtkinlik(EtkinlikDTO EtkinlikDTO) {
-        Etkinlik Etkinlik = modelMapper.map(EtkinlikDTO, Etkinlik.class);
-        etkinlikRepository.save(Etkinlik);
+    public Result addEtkinlik(EtkinlikDTO etkinlikDTO) {
+        Etkinlik etkinlik = modelMapper.map(etkinlikDTO, Etkinlik.class);
+        Personel personel = personelRepository.findById(etkinlikDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + etkinlikDTO.getPersonelId()));
+
+        etkinlik.setPersonel(personel);
+
+        etkinlikRepository.save(etkinlik);
         return new SuccessDataResult<>("Etkinlik added successfully.");
     }
 
     @Transactional
     @Override
-    public Result updateEtkinlik(Long id, EtkinlikDTO EtkinlikDTO) {
+    public Result updateEtkinlik(Long id, EtkinlikDTO etkinlikDTO) {
         Etkinlik existingEtkinlik = etkinlikRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Etkinlik not found with id: " + id));
-        modelMapper.map(EtkinlikDTO, existingEtkinlik);
+        modelMapper.map(etkinlikDTO, existingEtkinlik);
+
+        Personel personel = personelRepository.findById(etkinlikDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + etkinlikDTO.getPersonelId()));
+
+        existingEtkinlik.setPersonel(personel);
+
         etkinlikRepository.save(existingEtkinlik);
         return new SuccessResult("Etkinlik updated successfully.");
     }

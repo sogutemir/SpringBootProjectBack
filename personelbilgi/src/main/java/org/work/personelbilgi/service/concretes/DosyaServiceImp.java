@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.work.personelbilgi.core.result.*;
 import org.work.personelbilgi.dto.DosyaDTO;
 import org.work.personelbilgi.model.Dosya;
+import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.repository.DosyaRepository;
+import org.work.personelbilgi.repository.PersonelRepository;
 import org.work.personelbilgi.service.abstracts.DosyaService;
 
 import java.util.Base64;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class DosyaServiceImp implements DosyaService {
 
     private final DosyaRepository dosyaRepository;
+    private final PersonelRepository personelRepository;
     private final ModelMapper modelMapper;
 
     @Transactional(readOnly = true)
@@ -81,6 +84,12 @@ public class DosyaServiceImp implements DosyaService {
             byte[] DosyaBase = Base64.getDecoder().decode(dosyaDTO.getDosyaBase64());
             dosya.setDosya(DosyaBase);
         }
+
+        Personel personel = personelRepository.findById(dosyaDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + dosyaDTO.getPersonelId()));
+
+        dosya.setPersonel(personel);
+
         dosyaRepository.save(dosya);
         return new SuccessResult("Dosya added successfully.");
     }
@@ -95,6 +104,12 @@ public class DosyaServiceImp implements DosyaService {
             byte[] Dosya = Base64.getDecoder().decode(dosyaDTO.getDosyaBase64());
             existingDosya.setDosya(Dosya);
         }
+
+        Personel personel = personelRepository.findById(dosyaDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + dosyaDTO.getPersonelId()));
+
+        existingDosya.setPersonel(personel);
+
         dosyaRepository.save(existingDosya);
         return new SuccessResult("Dosya updated successfully.");
     }

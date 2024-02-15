@@ -1,5 +1,6 @@
 package org.work.personelbilgi.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.time.LocalDate;
 
@@ -14,4 +15,7 @@ public class EtkinlikDTO {
     private String link;
     private String ek;
     private LocalDate yuklemeTarihi;
+
+    @NotNull
+    private Long personelId;
 }

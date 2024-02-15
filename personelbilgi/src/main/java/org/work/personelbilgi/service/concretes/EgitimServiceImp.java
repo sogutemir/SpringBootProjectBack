@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.work.personelbilgi.core.result.*;
 import org.work.personelbilgi.dto.EgitimDTO;
 import org.work.personelbilgi.model.Egitim;
+import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.repository.EgitimRepository;
+import org.work.personelbilgi.repository.PersonelRepository;
 import org.work.personelbilgi.service.abstracts.EgitimService;
 
 import java.util.List;
@@ -19,6 +21,7 @@ public class EgitimServiceImp implements EgitimService {
 
     private final EgitimRepository egitimRepository;
     private final ModelMapper modelMapper;
+    private final PersonelRepository personelRepository;
 
     @Transactional
     @Override
@@ -55,6 +58,10 @@ public class EgitimServiceImp implements EgitimService {
     @Override
     public Result addEgitim(EgitimDTO egitimDTO) {
         Egitim egitim = modelMapper.map(egitimDTO, Egitim.class);
+        Personel personel = personelRepository.findById(egitimDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + egitimDTO.getPersonelId()));
+
+        egitim.setPersonel(personel);
         egitimRepository.save(egitim);
         return new SuccessDataResult<>("Egitim added successfully.");
     }
@@ -65,6 +72,12 @@ public class EgitimServiceImp implements EgitimService {
         Egitim existingEgitim = egitimRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Egitim not found with id: " + id));
         modelMapper.map(egitimDTO, existingEgitim);
+
+        Personel personel = personelRepository.findById(egitimDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + egitimDTO.getPersonelId()));
+
+        existingEgitim.setPersonel(personel);
+
         egitimRepository.save(existingEgitim);
         return new SuccessResult("Egitim updated successfully.");
     }

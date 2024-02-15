@@ -1,5 +1,6 @@
 package org.work.personelbilgi.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.time.LocalDate;
 
@@ -14,4 +15,6 @@ public class ProjeDTO {
     private LocalDate projeBaslangicTarihi;
     private LocalDate projeBitisTarihi;
 
+    @NotNull
+    private Long personelId;
 }

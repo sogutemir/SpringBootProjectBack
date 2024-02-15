@@ -8,12 +8,13 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EgitimDTO {
+public class DeneyimDTO {
 
-    private String egitimTuru;
-    private String universiteOkul;
-    private LocalDate egitimBaslangicTarihi;
-    private LocalDate egitimBitisTarihi;
+    private String kurumAdi;
+    private String calismaSekli;
+    private LocalDate isBaslangicTarihi;
+    private LocalDate isBitisTarihi;
+    private String calismaPosizyonu;
     private String ekBilgi;
     
     @NotNull

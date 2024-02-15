@@ -6,8 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.work.personelbilgi.core.result.*;
 import org.work.personelbilgi.dto.ProjeDTO;
-import org.work.personelbilgi.dto.ProjeDTO;
+import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.model.Proje;
+import org.work.personelbilgi.repository.PersonelRepository;
 import org.work.personelbilgi.repository.ProjeRepository;
 import org.work.personelbilgi.service.abstracts.ProjeService;
 
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class ProjeServiceImp implements ProjeService {
 
     private final ProjeRepository projeRepository;
+    private final PersonelRepository personelRepository;
     private final ModelMapper modelMapper;
 
     @Transactional
@@ -54,18 +56,30 @@ public class ProjeServiceImp implements ProjeService {
 
     @Transactional
     @Override
-    public Result addProje(ProjeDTO ProjeDTO) {
-        Proje Proje = modelMapper.map(ProjeDTO, Proje.class);
-        projeRepository.save(Proje);
+    public Result addProje(ProjeDTO projeDTO) {
+        Proje proje = modelMapper.map(projeDTO, Proje.class);
+
+        Personel personel = personelRepository.findById(projeDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + projeDTO.getPersonelId()));
+
+        proje.setPersonel(personel);
+
+        projeRepository.save(proje);
         return new SuccessDataResult<>("Proje added successfully.");
     }
 
     @Transactional
     @Override
-    public Result updateProje(Long id, ProjeDTO ProjeDTO) {
+    public Result updateProje(Long id, ProjeDTO projeDTO) {
         Proje existingProje = projeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Proje not found with id: " + id));
-        modelMapper.map(ProjeDTO, existingProje);
+        modelMapper.map(projeDTO, existingProje);
+
+        Personel personel = personelRepository.findById(projeDTO.getPersonelId())
+                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + projeDTO.getPersonelId()));
+
+        existingProje.setPersonel(personel);
+
         projeRepository.save(existingProje);
         return new SuccessResult("Proje updated successfully.");
     }
