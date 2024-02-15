@@ -1,12 +1,15 @@
 package org.work.personelbilgi.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Etkinlik {
@@ -15,11 +18,12 @@ public class Etkinlik {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personel_id", nullable = false)
     private Personel personel;
 
+    @NotEmpty(message = "Etkinlik türü boş olamaz")
+    @Size(max = 50, message = "Etkinlik türü en fazla 50 karakter olmalıdır")
     @Column(nullable = false, length = 50)
     private String etkinlikTuru;
-
 }

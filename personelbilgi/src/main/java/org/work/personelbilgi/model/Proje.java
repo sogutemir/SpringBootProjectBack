@@ -4,14 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.PastOrPresent;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import java.time.LocalDate;
 
 @Entity
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class Proje {
 
     @Id
@@ -27,12 +29,9 @@ public class Proje {
 
     @NotEmpty(message = "Proje başlangıç tarihi boş olamaz")
     @Past
-    @Temporal(TemporalType.DATE)
-    private String projeBaslangicTarihi;
+    private LocalDate projeBaslangicTarihi;
 
     @NotEmpty(message = "Proje bitiş tarihi boş olamaz")
     @PastOrPresent
-    @Temporal(TemporalType.DATE)
-    private String projeBitisTarihi;
-
+    private LocalDate projeBitisTarihi;
 }

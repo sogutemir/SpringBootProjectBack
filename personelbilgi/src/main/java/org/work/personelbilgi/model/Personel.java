@@ -2,17 +2,19 @@ package org.work.personelbilgi.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.work.personelbilgi.validation.tcKimlikNo.ValidTCKimlikNo;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@AllArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = {"egitimler", "projeler", "etkinlikler"})
 @NoArgsConstructor
-@Data
+@AllArgsConstructor
 public class Personel {
 
     @Id
@@ -29,14 +31,14 @@ public class Personel {
 
     @NotBlank(message = "T.C. Kimlik Numarası boş bırakılamaz")
     @Size(min = 11, max = 11, message = "T.C. Kimlik Numarası 11 karakter olmalıdır")
+    @ValidTCKimlikNo
     private String tcKimlikNo;
 
     @Size(max = 50, message = "Akademik Ünvan en fazla 50 karakter olmalıdır")
     private String akademikUnvan;
 
     @Past
-    @Temporal(TemporalType.DATE)
-    private Date dogumTarihi;
+    private LocalDate dogumTarihi;
 
     @NotBlank(message = "E-posta boş olamaz")
     @Email
@@ -55,8 +57,7 @@ public class Personel {
     private String ikametgahAdresi;
 
     @PastOrPresent
-    @Temporal(TemporalType.DATE)
-    private Date iseGirisTarihi;
+    private LocalDate iseGirisTarihi;
 
     private String sicilNo;
 
@@ -84,12 +85,12 @@ public class Personel {
 
     private String odaNumarasi;
 
-    @OneToMany(mappedBy = "personel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "personel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Egitim> egitimler;
 
-    @OneToMany(mappedBy = "personel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "personel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Proje> projeler;
 
-    @OneToMany(mappedBy = "personel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "personel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Etkinlik> etkinlikler;
 }
