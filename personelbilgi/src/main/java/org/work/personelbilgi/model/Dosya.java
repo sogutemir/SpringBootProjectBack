@@ -38,4 +38,8 @@ public class Dosya {
     @NotEmpty(message = "Yükleme tarihi boş olamaz")
     @Column(name = "yukleme_tarihi")
     private LocalDate yuklemeTarihi;
+
+    @Lob
+    @Column(name = "dosya_icerigi")
+    private byte[] icerik;
 }

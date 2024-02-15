@@ -107,6 +107,10 @@ public class Personel {
     @Column(name = "oda_numarasi")
     private String odaNumarasi;
 
+    @Lob
+    @Column(name = "personel_foto")
+    private byte[] fotograf;
+
     @OneToMany(mappedBy = "personel", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Egitim> egitimler;
 
