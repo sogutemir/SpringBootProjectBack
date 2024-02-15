@@ -41,5 +41,5 @@ public class Dosya {
 
     @Lob
     @Column(name = "dosya_icerigi")
-    private byte[] icerik;
+    private byte[] dosya;
 }

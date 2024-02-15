@@ -13,6 +13,6 @@ public class DosyaDTO {
     private String dosyaAdi;
     private String bolum;
     private LocalDate yuklemeTarihi;
-    private byte[] dosya;
+    private String dosyaBase64;
 
 }
