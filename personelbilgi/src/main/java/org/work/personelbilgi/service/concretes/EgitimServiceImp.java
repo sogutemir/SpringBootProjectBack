@@ -1,6 +1,6 @@
 package org.work.personelbilgi.service.concretes;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,30 +23,36 @@ public class EgitimServiceImp implements EgitimService {
     private final ModelMapper modelMapper;
     private final PersonelRepository personelRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public DataResult<List<EgitimDTO>> getAllEgitim() {
         List<Egitim> egitimList = egitimRepository.findAll();
+        if (egitimList == null || egitimList.isEmpty()) {
+            return new ErrorDataResult<>("No Egitim records found.");
+        }
         List<EgitimDTO> egitimDTOS = egitimList.stream()
                 .map(egitim -> modelMapper.map(egitim, EgitimDTO.class))
                 .collect(Collectors.toList());
         return new SuccessDataResult<>(egitimDTOS, "All egitim listed successfully.");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public DataResult<EgitimDTO> getEgitimById(Long id) {
-        Egitim egitim = egitimRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Egitim not found with id: " + id));
+        Egitim egitim = egitimRepository.findById(id).orElse(null);
+        if (egitim == null) {
+            return new ErrorDataResult<>("Egitim not found with id: " + id);
+        }
         EgitimDTO egitimDTO = modelMapper.map(egitim, EgitimDTO.class);
         return new SuccessDataResult<>(egitimDTO, "Egitim found successfully.");
     }
-    @Transactional
+
+    @Transactional(readOnly = true)
     @Override
     public DataResult<List<EgitimDTO>> getEgitimByPersonelId(Long personelId) {
         List<Egitim> egitimList = egitimRepository.findByPersonelId(personelId);
-        if (egitimList.isEmpty()) {
-            throw new IllegalArgumentException("Egitim not found with personel id: " + personelId);
+        if (egitimList == null || egitimList.isEmpty()) {
+            return new ErrorDataResult<>("No Egitim records found for personel id: " + personelId);
         }
         List<EgitimDTO> egitimDTOS = egitimList.stream()
                 .map(egitim -> modelMapper.map(egitim, EgitimDTO.class))
@@ -57,6 +63,9 @@ public class EgitimServiceImp implements EgitimService {
     @Transactional
     @Override
     public Result addEgitim(EgitimDTO egitimDTO) {
+        if (egitimDTO == null) {
+            return new ErrorDataResult<>("EgitimDTO is null.");
+        }
         Egitim egitim = modelMapper.map(egitimDTO, Egitim.class);
         Personel personel = personelRepository.findById(egitimDTO.getPersonelId())
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + egitimDTO.getPersonelId()));
@@ -69,6 +78,9 @@ public class EgitimServiceImp implements EgitimService {
     @Transactional
     @Override
     public Result updateEgitim(Long id, EgitimDTO egitimDTO) {
+        if (egitimDTO == null) {
+            return new ErrorDataResult<>("EgitimDTO is null.");
+        }
         Egitim existingEgitim = egitimRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Egitim not found with id: " + id));
         modelMapper.map(egitimDTO, existingEgitim);

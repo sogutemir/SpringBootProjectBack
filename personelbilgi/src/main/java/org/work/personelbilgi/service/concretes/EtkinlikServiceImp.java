@@ -1,6 +1,6 @@
 package org.work.personelbilgi.service.concretes;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,30 +23,36 @@ public class EtkinlikServiceImp implements EtkinlikService {
     private final ModelMapper modelMapper;
     private final PersonelRepository personelRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public DataResult<List<EtkinlikDTO>> getAllEtkinlik() {
         List<Etkinlik> EtkinlikList = etkinlikRepository.findAll();
+        if (EtkinlikList.isEmpty()) {
+            return new ErrorDataResult<>("No Etkinlik records found.");
+        }
         List<EtkinlikDTO> EtkinlikDTOS = EtkinlikList.stream()
                 .map(Etkinlik -> modelMapper.map(Etkinlik, EtkinlikDTO.class))
                 .collect(Collectors.toList());
         return new SuccessDataResult<>(EtkinlikDTOS, "All Etkinlik listed successfully.");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public DataResult<EtkinlikDTO> getEtkinlikById(Long id) {
-        Etkinlik Etkinlik = etkinlikRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Etkinlik not found with id: " + id));
+        Etkinlik Etkinlik = etkinlikRepository.findById(id).orElse(null);
+        if (Etkinlik == null) {
+            return new ErrorDataResult<>("Etkinlik not found with id: " + id);
+        }
         EtkinlikDTO EtkinlikDTO = modelMapper.map(Etkinlik, EtkinlikDTO.class);
         return new SuccessDataResult<>(EtkinlikDTO, "Etkinlik found successfully.");
     }
-    @Transactional
+
+    @Transactional(readOnly = true)
     @Override
     public DataResult<List<EtkinlikDTO>> getEtkinlikByPersonelId(Long personelId) {
         List<Etkinlik> EtkinlikList = etkinlikRepository.findByPersonelId(personelId);
-        if (EtkinlikList.isEmpty()) {
-            throw new IllegalArgumentException("Etkinlik not found with personel id: " + personelId);
+        if (EtkinlikList == null || EtkinlikList.isEmpty()) {
+            return new ErrorDataResult<>("No Etkinlik records found for personel id: " + personelId);
         }
         List<EtkinlikDTO> EtkinlikDTOS = EtkinlikList.stream()
                 .map(Etkinlik -> modelMapper.map(Etkinlik, EtkinlikDTO.class))
@@ -57,6 +63,9 @@ public class EtkinlikServiceImp implements EtkinlikService {
     @Transactional
     @Override
     public Result addEtkinlik(EtkinlikDTO etkinlikDTO) {
+        if (etkinlikDTO == null) {
+            return new ErrorDataResult<>("EtkinlikDTO is null.");
+        }
         Etkinlik etkinlik = modelMapper.map(etkinlikDTO, Etkinlik.class);
         Personel personel = personelRepository.findById(etkinlikDTO.getPersonelId())
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + etkinlikDTO.getPersonelId()));
@@ -70,6 +79,9 @@ public class EtkinlikServiceImp implements EtkinlikService {
     @Transactional
     @Override
     public Result updateEtkinlik(Long id, EtkinlikDTO etkinlikDTO) {
+        if (etkinlikDTO == null) {
+            return new ErrorDataResult<>("EtkinlikDTO is null.");
+        }
         Etkinlik existingEtkinlik = etkinlikRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Etkinlik not found with id: " + id));
         modelMapper.map(etkinlikDTO, existingEtkinlik);

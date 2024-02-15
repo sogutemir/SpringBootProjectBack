@@ -28,6 +28,9 @@ public class DosyaServiceImp implements DosyaService {
     @Override
     public DataResult<List<DosyaDTO>> getAllDosya() {
         List<Dosya> DosyaList = dosyaRepository.findAll();
+        if (DosyaList == null || DosyaList.isEmpty()) {
+            return new ErrorDataResult<>("No Dosya records found.");
+        }
         List<DosyaDTO> DosyaDTOs = DosyaList.stream()
                 .map(Dosya -> {
                     DosyaDTO dosyaDTO = modelMapper.map(Dosya, DosyaDTO.class);
@@ -42,8 +45,12 @@ public class DosyaServiceImp implements DosyaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DataResult<List<DosyaDTO>> getDosyaByPersonelId(Long personelID){
         List<Dosya> dosyaList = dosyaRepository.findByPersonelId(personelID);
+        if (dosyaList == null || dosyaList.isEmpty()) {
+            return new ErrorDataResult<>("No Dosya records found for personel id: " + personelID);
+        }
         List<DosyaDTO> dosyaDTOS = dosyaList.stream()
                 .map(Dosya -> {
                     DosyaDTO dosyaDTO = modelMapper.map(Dosya, DosyaDTO.class);
@@ -61,8 +68,10 @@ public class DosyaServiceImp implements DosyaService {
     @Transactional(readOnly = true)
     @Override
     public DataResult<DosyaDTO> getDosyaById(Long id) {
-        Dosya dosya = dosyaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Dosya not found with id: " + id));
+        Dosya dosya = dosyaRepository.findById(id).orElse(null);
+        if (dosya == null) {
+            return new ErrorDataResult<>("Dosya not found with id: " + id);
+        }
         DosyaDTO dosyaDTO = modelMapper.map(dosya, DosyaDTO.class);
 
         if (dosya.getDosya() != null) {
@@ -74,11 +83,12 @@ public class DosyaServiceImp implements DosyaService {
     }
 
 
-
-
     @Transactional
     @Override
     public Result addDosya(DosyaDTO dosyaDTO) {
+        if (dosyaDTO == null) {
+            return new ErrorDataResult<>("DosyaDTO is null.");
+        }
         Dosya dosya = modelMapper.map(dosyaDTO, Dosya.class);
         if(dosyaDTO.getDosyaBase64() != null && !dosyaDTO.getDosyaBase64().isEmpty()){
             byte[] DosyaBase = Base64.getDecoder().decode(dosyaDTO.getDosyaBase64());
@@ -97,6 +107,9 @@ public class DosyaServiceImp implements DosyaService {
     @Transactional
     @Override
     public Result updateDosya(Long id, DosyaDTO dosyaDTO) {
+        if (dosyaDTO == null) {
+            return new ErrorDataResult<>("DosyaDTO is null.");
+        }
         Dosya existingDosya = dosyaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Dosya not found with id: " + id));
         modelMapper.map(dosyaDTO, existingDosya);

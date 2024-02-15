@@ -8,6 +8,7 @@ import org.work.personelbilgi.dto.PersonelDTO;
 import org.springframework.transaction.annotation.Transactional;
 import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.repository.PersonelRepository;
+import org.work.personelbilgi.service.abstracts.PersonelService;
 
 import java.util.Base64;
 import java.util.List;
@@ -15,7 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PersonelServiceImp implements org.work.personelbilgi.service.abstracts.PersonelService {
+public class PersonelServiceImp implements PersonelService {
+
     private final PersonelRepository personelRepository;
     private final ModelMapper modelMapper;
 
@@ -23,6 +25,9 @@ public class PersonelServiceImp implements org.work.personelbilgi.service.abstra
     @Override
     public DataResult<List<PersonelDTO>> getAllPersonel() {
         List<Personel> personelList = personelRepository.findAll();
+        if (personelList.isEmpty()) {
+            return new ErrorDataResult<>("No Personel records found.");
+        }
         List<PersonelDTO> personelDTOs = personelList.stream()
                 .map(personel -> {
                     PersonelDTO personelDTO = modelMapper.map(personel, PersonelDTO.class);
@@ -39,8 +44,10 @@ public class PersonelServiceImp implements org.work.personelbilgi.service.abstra
     @Transactional(readOnly = true)
     @Override
     public DataResult<PersonelDTO> getPersonelById(Long id) {
-        Personel personel = personelRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + id));
+        Personel personel = personelRepository.findById(id).orElse(null);
+        if (personel == null) {
+            return new ErrorDataResult<>("Personel not found with id: " + id);
+        }
         PersonelDTO personelDTO = modelMapper.map(personel, PersonelDTO.class);
 
         if (personel.getFotograf() != null) {
@@ -51,10 +58,12 @@ public class PersonelServiceImp implements org.work.personelbilgi.service.abstra
         return new SuccessDataResult<>(personelDTO, "Personel found successfully.");
     }
 
-
     @Transactional
     @Override
     public Result addPersonel(PersonelDTO personelDTO) {
+        if (personelDTO == null) {
+            return new ErrorDataResult<>("PersonelDTO is null.");
+        }
         Personel personel = modelMapper.map(personelDTO, Personel.class);
         if(personelDTO.getFotografBase64() != null && !personelDTO.getFotografBase64().isEmpty()){
             byte[] fotograf = Base64.getDecoder().decode(personelDTO.getFotografBase64());
@@ -67,6 +76,9 @@ public class PersonelServiceImp implements org.work.personelbilgi.service.abstra
     @Transactional
     @Override
     public Result updatePersonel(Long id, PersonelDTO personelDTO) {
+        if (personelDTO == null) {
+            return new ErrorDataResult<>("PersonelDTO is null.");
+        }
         Personel existingPersonel = personelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + id));
         modelMapper.map(personelDTO, existingPersonel);
@@ -77,6 +89,7 @@ public class PersonelServiceImp implements org.work.personelbilgi.service.abstra
         personelRepository.save(existingPersonel);
         return new SuccessResult("Personel updated successfully.");
     }
+
 
     @Transactional
     @Override
