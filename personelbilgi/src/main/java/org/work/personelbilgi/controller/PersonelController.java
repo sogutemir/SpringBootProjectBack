@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.work.personelbilgi.core.result.DataResult;
 import org.work.personelbilgi.core.result.Result;
 import org.work.personelbilgi.dto.PersonelDTO;
-import org.work.personelbilgi.service.concretes.PersonelService;
+import org.work.personelbilgi.service.concretes.PersonelServiceImpl;
 import org.work.personelbilgi.utils.ResponseUtil;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/personel")
 public class PersonelController {
 
-    private final PersonelService personelService;
+    private final PersonelServiceImpl personelService;
 
     @GetMapping("/getAllPersonel")
     public ResponseEntity<DataResult<List<PersonelDTO>>> getAllPersonel(){
