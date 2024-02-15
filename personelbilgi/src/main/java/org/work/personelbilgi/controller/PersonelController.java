@@ -40,9 +40,6 @@ public class PersonelController {
 
     @PutMapping("/updatePersonel/{id}")
     public ResponseEntity<Result> updatePersonel(@PathVariable Long id, @Valid @RequestBody PersonelDTO personelDTO){
-        if(personelDTO.getFotografBase64() != null && !personelDTO.getFotografBase64().isEmpty()){
-            byte[] fotograf = Base64.getDecoder().decode(personelDTO.getFotografBase64());
-        }
         return ResponseUtil.buildResultResponse(personelService.updatePersonel(id, personelDTO));
     }
 
