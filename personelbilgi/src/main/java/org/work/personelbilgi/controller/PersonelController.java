@@ -3,14 +3,17 @@ package org.work.personelbilgi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.work.personelbilgi.core.result.DataResult;
 import org.work.personelbilgi.core.result.Result;
 import org.work.personelbilgi.dto.PersonelDTO;
+import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.service.concretes.PersonelServiceImpl;
 import org.work.personelbilgi.utils.ResponseUtil;
 
+import java.util.Base64;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,6 +40,9 @@ public class PersonelController {
 
     @PutMapping("/updatePersonel/{id}")
     public ResponseEntity<Result> updatePersonel(@PathVariable Long id, @Valid @RequestBody PersonelDTO personelDTO){
+        if(personelDTO.getFotografBase64() != null && !personelDTO.getFotografBase64().isEmpty()){
+            byte[] fotograf = Base64.getDecoder().decode(personelDTO.getFotografBase64());
+        }
         return ResponseUtil.buildResultResponse(personelService.updatePersonel(id, personelDTO));
     }
 

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.work.personelbilgi.model.Personel;
 import org.work.personelbilgi.repository.PersonelRepository;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,14 @@ public class PersonelServiceImpl implements org.work.personelbilgi.service.abstr
     public DataResult<List<PersonelDTO>> getAllPersonel() {
         List<Personel> personelList = personelRepository.findAll();
         List<PersonelDTO> personelDTOs = personelList.stream()
-                .map(personel -> modelMapper.map(personel, PersonelDTO.class))
+                .map(personel -> {
+                    PersonelDTO personelDTO = modelMapper.map(personel, PersonelDTO.class);
+                    if (personel.getFotograf() != null) {
+                        String fotografBase64 = Base64.getEncoder().encodeToString(personel.getFotograf());
+                        personelDTO.setFotografBase64(fotografBase64);
+                    }
+                    return personelDTO;
+                })
                 .collect(Collectors.toList());
         return new SuccessDataResult<>(personelDTOs, "All personnel listed successfully.");
     }
@@ -34,13 +42,24 @@ public class PersonelServiceImpl implements org.work.personelbilgi.service.abstr
         Personel personel = personelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + id));
         PersonelDTO personelDTO = modelMapper.map(personel, PersonelDTO.class);
+
+        if (personel.getFotograf() != null) {
+            String fotografBase64 = Base64.getEncoder().encodeToString(personel.getFotograf());
+            personelDTO.setFotografBase64(fotografBase64);
+        }
+
         return new SuccessDataResult<>(personelDTO, "Personel found successfully.");
     }
+
 
     @Transactional
     @Override
     public Result addPersonel(PersonelDTO personelDTO) {
         Personel personel = modelMapper.map(personelDTO, Personel.class);
+        if(personelDTO.getFotografBase64() != null && !personelDTO.getFotografBase64().isEmpty()){
+            byte[] fotograf = Base64.getDecoder().decode(personelDTO.getFotografBase64());
+            personel.setFotograf(fotograf);
+        }
         personelRepository.save(personel);
         return new SuccessResult("Personel added successfully.");
     }
@@ -51,6 +70,10 @@ public class PersonelServiceImpl implements org.work.personelbilgi.service.abstr
         Personel existingPersonel = personelRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + id));
         modelMapper.map(personelDTO, existingPersonel);
+        if(personelDTO.getFotografBase64() != null && !personelDTO.getFotografBase64().isEmpty()){
+            byte[] fotograf = Base64.getDecoder().decode(personelDTO.getFotografBase64());
+            existingPersonel.setFotograf(fotograf);
+        }
         personelRepository.save(existingPersonel);
         return new SuccessResult("Personel updated successfully.");
     }

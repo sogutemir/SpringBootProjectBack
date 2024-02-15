@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DosyaDTO {
-    private Long id;
     private String dosyaTuru;
     private String dosyaAdi;
     private String bolum;

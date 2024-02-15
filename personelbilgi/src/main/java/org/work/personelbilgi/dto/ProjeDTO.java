@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProjeDTO {
-    private Long id;
     private String projeAdi;
     private String takımAdi;
     private String projeGorevi;

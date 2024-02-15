@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EtkinlikDTO {
 
-    private Long id;
     private String etkinlikTuru;
     private String aciklama;
     private String link;

@@ -3,6 +3,7 @@ package org.work.personelbilgi.service.abstracts;
 import org.work.personelbilgi.core.result.DataResult;
 import org.work.personelbilgi.core.result.Result;
 import org.work.personelbilgi.dto.PersonelDTO;
+import org.work.personelbilgi.model.Personel;
 
 import java.util.List;
 

@@ -3,13 +3,13 @@ package org.work.personelbilgi.dto;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonelDTO {
-    private Long id;
     private String ad;
     private String soyad;
     private String tcKimlikNo;
@@ -31,5 +31,6 @@ public class PersonelDTO {
     private String servisKullanimi;
     private String dahiliNumara;
     private String odaNumarasi;
-    private byte[] fotograf;
+    private String fotografBase64;
+
 }

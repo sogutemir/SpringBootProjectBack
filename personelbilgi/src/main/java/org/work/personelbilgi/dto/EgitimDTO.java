@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class EgitimDTO {
 
-    private Long id;
     private String egitimTuru;
     private String universiteOkul;
     private LocalDate egitimBaslangicTarihi;
