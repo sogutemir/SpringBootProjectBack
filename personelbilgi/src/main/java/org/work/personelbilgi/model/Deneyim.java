@@ -23,10 +23,6 @@ public class Deneyim {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personel_id", nullable = false)
-    private Personel personel;
-
     @NotEmpty(message = "Kurum adi boş olamaz")
     @Column(name = "kurum_adi")
     private String kurumAdi;
@@ -50,4 +46,8 @@ public class Deneyim {
 
     @Column(name = "ek_bilgi")
     private String ekBilgi;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "personel_id", nullable = false)
+    private Personel personel;
 }
