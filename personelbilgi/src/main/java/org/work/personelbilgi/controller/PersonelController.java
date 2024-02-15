@@ -3,17 +3,14 @@ package org.work.personelbilgi.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.work.personelbilgi.core.result.DataResult;
 import org.work.personelbilgi.core.result.Result;
 import org.work.personelbilgi.dto.PersonelDTO;
-import org.work.personelbilgi.model.Personel;
-import org.work.personelbilgi.service.concretes.PersonelServiceImpl;
+import org.work.personelbilgi.service.concretes.PersonelServiceImp;
 import org.work.personelbilgi.utils.ResponseUtil;
 
-import java.util.Base64;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/personel")
 public class PersonelController {
 
-    private final PersonelServiceImpl personelService;
+    private final PersonelServiceImp personelService;
 
     @GetMapping("/getAllPersonel")
     public ResponseEntity<DataResult<List<PersonelDTO>>> getAllPersonel(){

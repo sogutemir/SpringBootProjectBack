@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PersonelServiceImpl implements org.work.personelbilgi.service.abstracts.PersonelService {
+public class PersonelServiceImp implements org.work.personelbilgi.service.abstracts.PersonelService {
     private final PersonelRepository personelRepository;
     private final ModelMapper modelMapper;
 
