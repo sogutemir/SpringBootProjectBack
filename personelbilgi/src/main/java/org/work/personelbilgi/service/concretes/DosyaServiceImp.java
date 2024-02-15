@@ -27,58 +27,72 @@ public class DosyaServiceImp implements DosyaService {
         List<Dosya> DosyaList = dosyaRepository.findAll();
         List<DosyaDTO> DosyaDTOs = DosyaList.stream()
                 .map(Dosya -> {
-                    DosyaDTO DosyaDTO = modelMapper.map(Dosya, DosyaDTO.class);
+                    DosyaDTO dosyaDTO = modelMapper.map(Dosya, DosyaDTO.class);
                     if (Dosya.getDosya() != null) {
                         String DosyaBase64 = Base64.getEncoder().encodeToString(Dosya.getDosya());
-                        DosyaDTO.setDosyaBase64(DosyaBase64);
+                        dosyaDTO.setDosyaBase64(DosyaBase64);
                     }
-                    return DosyaDTO;
+                    return dosyaDTO;
                 })
                 .collect(Collectors.toList());
         return new SuccessDataResult<>(DosyaDTOs, "All personnel listed successfully.");
     }
 
+    @Override
+    public DataResult<List<DosyaDTO>> getDosyaByPersonelId(Long personelID){
+        List<Dosya> dosyaList = dosyaRepository.findByPersonelId(personelID);
+        List<DosyaDTO> dosyaDTOS = dosyaList.stream()
+                .map(Dosya -> {
+                    DosyaDTO dosyaDTO = modelMapper.map(Dosya, DosyaDTO.class);
+                    if(Dosya.getDosya() != null) {
+                        String DosyaBase64 = Base64.getEncoder().encodeToString(Dosya.getDosya());
+                        dosyaDTO.setDosyaBase64(DosyaBase64);
+                    }
+                    return dosyaDTO;
+                })
+                .collect(Collectors.toList());
+
+        return new SuccessDataResult<>(dosyaDTOS, "All personnel listed successfully.");
+    }
+
     @Transactional(readOnly = true)
     @Override
     public DataResult<DosyaDTO> getDosyaById(Long id) {
-        Dosya Dosya = dosyaRepository.findById(id)
+        Dosya dosya = dosyaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Dosya not found with id: " + id));
-        DosyaDTO DosyaDTO = modelMapper.map(Dosya, DosyaDTO.class);
+        DosyaDTO dosyaDTO = modelMapper.map(dosya, DosyaDTO.class);
 
-        if (Dosya.getDosya() != null) {
-            String DosyaBase64 = Base64.getEncoder().encodeToString(Dosya.getDosya());
-            DosyaDTO.setDosyaBase64(DosyaBase64);
+        if (dosya.getDosya() != null) {
+            String DosyaBase64 = Base64.getEncoder().encodeToString(dosya.getDosya());
+            dosyaDTO.setDosyaBase64(DosyaBase64);
         }
 
-        return new SuccessDataResult<>(DosyaDTO, "Dosya found successfully.");
+        return new SuccessDataResult<>(dosyaDTO, "Dosya found successfully.");
     }
 
-    @Override
-    public DataResult<List<DosyaDTO>> getDosyaByDosyaId(Long DosyaId) {
-        return null;
-    }
+
 
 
     @Transactional
     @Override
-    public Result addDosya(DosyaDTO DosyaDTO) {
-        Dosya Dosya = modelMapper.map(DosyaDTO, Dosya.class);
-        if(DosyaDTO.getDosyaBase64() != null && !DosyaDTO.getDosyaBase64().isEmpty()){
-            byte[] DosyaBase = Base64.getDecoder().decode(DosyaDTO.getDosyaBase64());
-            Dosya.setDosya(DosyaBase);
+    public Result addDosya(DosyaDTO dosyaDTO) {
+        Dosya dosya = modelMapper.map(dosyaDTO, Dosya.class);
+        if(dosyaDTO.getDosyaBase64() != null && !dosyaDTO.getDosyaBase64().isEmpty()){
+            byte[] DosyaBase = Base64.getDecoder().decode(dosyaDTO.getDosyaBase64());
+            dosya.setDosya(DosyaBase);
         }
-        dosyaRepository.save(Dosya);
+        dosyaRepository.save(dosya);
         return new SuccessResult("Dosya added successfully.");
     }
 
     @Transactional
     @Override
-    public Result updateDosya(Long id, DosyaDTO DosyaDTO) {
+    public Result updateDosya(Long id, DosyaDTO dosyaDTO) {
         Dosya existingDosya = dosyaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Dosya not found with id: " + id));
-        modelMapper.map(DosyaDTO, existingDosya);
-        if(DosyaDTO.getDosyaBase64() != null && !DosyaDTO.getDosyaBase64().isEmpty()){
-            byte[] Dosya = Base64.getDecoder().decode(DosyaDTO.getDosyaBase64());
+        modelMapper.map(dosyaDTO, existingDosya);
+        if(dosyaDTO.getDosyaBase64() != null && !dosyaDTO.getDosyaBase64().isEmpty()){
+            byte[] Dosya = Base64.getDecoder().decode(dosyaDTO.getDosyaBase64());
             existingDosya.setDosya(Dosya);
         }
         dosyaRepository.save(existingDosya);

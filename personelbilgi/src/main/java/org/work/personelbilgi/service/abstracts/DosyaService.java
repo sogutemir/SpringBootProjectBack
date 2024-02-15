@@ -7,8 +7,8 @@ import java.util.List;
 public interface DosyaService {
     DataResult<List<DosyaDTO>> getAllDosya();
     DataResult<DosyaDTO> getDosyaById(Long id);
-    DataResult<List<DosyaDTO>> getDosyaByDosyaId(Long DosyaId);
-    Result addDosya(DosyaDTO DosyaDTO);
-    Result updateDosya(Long id,DosyaDTO DosyaDTO);
+    DataResult<List<DosyaDTO>> getDosyaByPersonelId(Long personelID);
+    Result addDosya(DosyaDTO dosyaDTO);
+    Result updateDosya(Long id,DosyaDTO dosyaDTO);
     Result deleteDosya(Long id);
 }
