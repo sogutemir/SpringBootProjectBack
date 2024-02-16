@@ -85,6 +85,8 @@ public class PersonelServiceImp implements PersonelService {
         if(personelDTO.getFotografBase64() != null && !personelDTO.getFotografBase64().isEmpty()){
             byte[] fotograf = Base64.getDecoder().decode(personelDTO.getFotografBase64());
             existingPersonel.setFotograf(fotograf);
+        }else {
+            existingPersonel.setFotograf(null);
         }
         personelRepository.save(existingPersonel);
         return new SuccessResult("Personel updated successfully.");

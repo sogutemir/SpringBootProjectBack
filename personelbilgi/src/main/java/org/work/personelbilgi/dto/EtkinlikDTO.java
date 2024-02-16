@@ -13,7 +13,7 @@ public class EtkinlikDTO {
     private String etkinlikTuru;
     private String aciklama;
     private String link;
-    private String ek;
+    private String ek64;
     private LocalDate yuklemeTarihi;
 
     @NotNull

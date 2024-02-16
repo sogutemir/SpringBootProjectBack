@@ -37,9 +37,13 @@ public class Proje {
     @Column(name = "proje_baslangic_tarihi")
     private LocalDate projeBaslangicTarihi;
 
+    @Column(name = "proje_devam_ediyor")
+    private Boolean projeDevamEdiyor;
+
     @PastOrPresent(message = "Proje bitiş tarihi bugün veya geçmişte olmalı")
     @Column(name = "proje_bitis_tarihi")
     private LocalDate projeBitisTarihi;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "personel_id", nullable = false)

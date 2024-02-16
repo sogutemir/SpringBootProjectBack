@@ -39,8 +39,9 @@ public class Etkinlik {
     @Column(name = "link")
     private String link;
 
+    @Lob
     @Column(name = "ek")
-    private String ek;
+    private byte[] ek;
 
     @Column(name = "yukleme_Tarihi")
     private LocalDate yuklemeTarihi;

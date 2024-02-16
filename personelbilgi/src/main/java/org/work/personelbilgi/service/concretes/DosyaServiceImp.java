@@ -28,7 +28,7 @@ public class DosyaServiceImp implements DosyaService {
     @Override
     public DataResult<List<DosyaDTO>> getAllDosya() {
         List<Dosya> DosyaList = dosyaRepository.findAll();
-        if (DosyaList == null || DosyaList.isEmpty()) {
+        if (DosyaList.isEmpty()) {
             return new ErrorDataResult<>("No Dosya records found.");
         }
         List<DosyaDTO> DosyaDTOs = DosyaList.stream()
@@ -116,7 +116,10 @@ public class DosyaServiceImp implements DosyaService {
         if(dosyaDTO.getDosyaBase64() != null && !dosyaDTO.getDosyaBase64().isEmpty()){
             byte[] Dosya = Base64.getDecoder().decode(dosyaDTO.getDosyaBase64());
             existingDosya.setDosya(Dosya);
+        }else {
+            existingDosya.setDosya(null);
         }
+
 
         Personel personel = personelRepository.findById(dosyaDTO.getPersonelId())
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + dosyaDTO.getPersonelId()));

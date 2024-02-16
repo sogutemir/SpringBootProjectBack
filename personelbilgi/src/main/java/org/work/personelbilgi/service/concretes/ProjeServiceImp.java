@@ -66,6 +66,9 @@ public class ProjeServiceImp implements ProjeService {
         if (projeDTO == null) {
             return new ErrorDataResult<>("ProjeDTO is null.");
         }
+        if (!projeDTO.isProjeDevamEdiyor() && projeDTO.getProjeBitisTarihi() == null) {
+            return new ErrorDataResult<>("Proje bitiş tarihi is required when the project is finished.");
+        }
         Proje proje = modelMapper.map(projeDTO, Proje.class);
         Personel personel = personelRepository.findById(projeDTO.getPersonelId())
                 .orElseThrow(() -> new IllegalArgumentException("Personel not found with id: " + projeDTO.getPersonelId()));
@@ -75,11 +78,15 @@ public class ProjeServiceImp implements ProjeService {
         return new SuccessDataResult<>("Proje added successfully.");
     }
 
+
     @Transactional
     @Override
     public Result updateProje(Long id, ProjeDTO projeDTO) {
         if (projeDTO == null) {
             return new ErrorDataResult<>("ProjeDTO is null.");
+        }
+        if (!projeDTO.isProjeDevamEdiyor() && projeDTO.getProjeBitisTarihi() == null) {
+            return new ErrorDataResult<>("Proje bitiş tarihi is required when the project is finished.");
         }
         Proje existingProje = projeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Proje not found with id: " + id));
@@ -93,7 +100,6 @@ public class ProjeServiceImp implements ProjeService {
         projeRepository.save(existingProje);
         return new SuccessResult("Proje updated successfully.");
     }
-
     @Transactional
     @Override
     public Result deleteProje(Long id) {
