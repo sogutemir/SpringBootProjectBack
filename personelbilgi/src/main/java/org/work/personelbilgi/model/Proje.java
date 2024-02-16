@@ -21,10 +21,6 @@ public class Proje {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personel_id", nullable = false)
-    private Personel personel;
-
     @NotEmpty(message = "Proje adı boş olamaz")
     @Column(name = "proje_adi")
     private String projeAdi;
@@ -37,13 +33,15 @@ public class Proje {
     @Column(name = "proje_gorevi")
     private String projeGorevi;
 
-    @NotEmpty(message = "Proje başlangıç tarihi boş olamaz")
-    @Past
+    @Past(message = "Proje başlangıç tarihi geçmişte olmalı")
     @Column(name = "proje_baslangic_tarihi")
     private LocalDate projeBaslangicTarihi;
 
-    @NotEmpty(message = "Proje bitiş tarihi boş olamaz")
-    @PastOrPresent
+    @PastOrPresent(message = "Proje bitiş tarihi bugün veya geçmişte olmalı")
     @Column(name = "proje_bitis_tarihi")
     private LocalDate projeBitisTarihi;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "personel_id", nullable = false)
+    private Personel personel;
 }

@@ -33,13 +33,11 @@ public class Egitim {
     @Column(name = "universite_okul")
     private String universiteOkul;
 
-    @NotEmpty(message = "Eğitim başlangıç tarihi boş olamaz")
-    @Past
+    @Past(message = "Eğitim başlangıç tarihi geçmişte olmalı")
     @Column(name = "egitim_baslangic_tarihi")
     private LocalDate egitimBaslangicTarihi;
 
-    @NotEmpty(message = "Eğitim bitiş tarihi boş olamaz")
-    @PastOrPresent
+    @PastOrPresent(message = "Eğitim bitiş tarihi bugün veya geçmişte olmalı")
     @Column(name = "egitim_bitis_tarihi")
     private LocalDate egitimBitisTarihi;
 

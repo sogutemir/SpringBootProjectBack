@@ -31,13 +31,11 @@ public class Deneyim {
     @Column(name = "calism_Sekli")
     private String calismaSekli;
 
-    @NotEmpty(message = "ise başlangıç tarihi boş olamaz")
-    @Past
+    @Past(message = "İş başlangıç tarihi geçmişte olmalı")
     @Column(name = "is_baslangic_tarihi")
     private LocalDate isBaslangicTarihi;
 
-    @NotEmpty(message = "is bitiş tarihi boş olamaz")
-    @PastOrPresent
+    @PastOrPresent(message = "İş bitiş tarihi bugün veya geçmişte olmalı")
     @Column(name = "is_bitis_tarihi")
     private LocalDate isBitisTarihi;
 

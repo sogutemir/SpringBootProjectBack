@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -31,15 +32,18 @@ public class Dosya {
     @Column(name = "bolum")
     private String bolum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "personel_id", nullable = false)
-    private Personel personel;
-
-    @NotEmpty(message = "Yükleme tarihi boş olamaz")
     @Column(name = "yukleme_tarihi")
-    private LocalDate yuklemeTarihi;
+    private LocalDateTime yuklemeTarihi;
+    @PrePersist
+    protected void onCreate() {
+        yuklemeTarihi = LocalDateTime.now();
+    }
 
     @Lob
     @Column(name = "dosya_icerigi")
     private byte[] dosya;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "personel_id", nullable = false)
+    private Personel personel;
 }
